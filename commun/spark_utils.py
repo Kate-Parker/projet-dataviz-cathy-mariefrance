@@ -20,7 +20,7 @@ import sys
 from pyspark.sql import SparkSession
 
 # --- Chemins -----------------------------------------------------------------
-WORK = "/home/jovyan/work"
+WORK = "/home/jovyan"
 RAW = f"{WORK}/data/raw"                 # fichiers téléchargés (sur le disque)
 BUCKET = "datalake"
 LAKE = f"s3a://{BUCKET}"                 # data lake : s3a://datalake/bronze/..., /silver/..., /gold/...
