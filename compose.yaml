@@ -1,0 +1,65 @@
+
+name: projet-comptage-multimodal
+
+services:
+  jupyter:
+    image: quay.io/jupyter/pyspark-notebook:latest
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+    volumes:
+      - .:/home/jovyan/work
+      - ivy-cache:/home/jovyan/.ivy2
+    command: start-notebook.py --IdentityProvider.token=${JUPYTER_TOKEN:-cours}
+    environment:
+      S3_ENDPOINT: http://rustfs:9000
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-rustfsadmin}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-rustfsadmin}
+      PG_HOST: postgres
+      PG_DB: ${PG_DB:-comptagemultimodal}
+      PG_USER: ${PG_USER:-cours}
+      PG_PASSWORD: ${PG_PASSWORD:-cours}
+    depends_on:
+      - postgres
+      - rustfs
+
+  rustfs-init:
+    image: alpine:3.20
+    command: sh -c "chown -R 10001:10001 /data && echo volume pret"
+    volumes:
+      - lake-data:/data
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      RUSTFS_VOLUMES: /data
+      RUSTFS_ADDRESS: 0.0.0.0:9000
+      RUSTFS_CONSOLE_ADDRESS: 0.0.0.0:9001
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY:-rustfsadmin}
+      RUSTFS_SECRET_KEY: ${S3_SECRET_KEY:-rustfsadmin}
+      RUSTFS_UNSAFE_BYPASS_DISK_CHECK: "true"
+    volumes:
+      - lake-data:/data
+    depends_on:
+      rustfs-init:
+        condition: service_completed_successfully
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${PG_USER:-cours}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-cours}
+      POSTGRES_DB: ${PG_DB:-openmedic}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+volumes:
+  ivy-cache:
+  lake-data:
+  pg-data:
