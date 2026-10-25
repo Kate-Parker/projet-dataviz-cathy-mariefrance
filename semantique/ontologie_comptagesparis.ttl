@@ -1,0 +1,71 @@
+
+@prefix : <http://example.org/comptage-multimodal#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/comptage-multimodal>
+    a owl:Ontology ;
+    rdfs:label "Ontologie du comptage multimodal à Paris"@fr .
+
+# Classes principales
+:ObservationComptage a owl:Class ;
+    rdfs:label "Observation de comptage"@fr .
+
+:SiteComptage a owl:Class ;
+    rdfs:label "Site de comptage"@fr .
+
+:ModeDeplacement a owl:Class ;
+    rdfs:label "Mode de déplacement"@fr .
+
+:TypeVoie a owl:Class ;
+    rdfs:label "Type de voie"@fr .
+
+# Relations entre les concepts
+:concerneSite a owl:ObjectProperty ;
+    rdfs:domain :ObservationComptage ;
+    rdfs:range :SiteComptage ;
+    rdfs:label "concerne le site"@fr .
+
+:concerneMode a owl:ObjectProperty ;
+    rdfs:domain :ObservationComptage ;
+    rdfs:range :ModeDeplacement ;
+    rdfs:label "concerne le mode de déplacement"@fr .
+
+:concerneTypeVoie a owl:ObjectProperty ;
+    rdfs:domain :ObservationComptage ;
+    rdfs:range :TypeVoie ;
+    rdfs:label "concerne le type de voie"@fr .
+
+# Propriétés descriptives de l'observation
+:dateHeureComptage a owl:DatatypeProperty ;
+    rdfs:domain :ObservationComptage ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "date et heure du comptage"@fr .
+
+:nombreVehicules a owl:DatatypeProperty ;
+    rdfs:domain :ObservationComptage ;
+    rdfs:range xsd:integer ;
+    rdfs:label "nombre de véhicules"@fr .
+
+# Identifiants et nom du site
+:identifiantSite a owl:DatatypeProperty ;
+    rdfs:domain :SiteComptage ;
+    rdfs:range xsd:string ;
+    rdfs:label "identifiant du site"@fr .
+
+:nomSite a owl:DatatypeProperty ;
+    rdfs:domain :SiteComptage ;
+    rdfs:range xsd:string ;
+    rdfs:label "nom du site"@fr .
+
+:coordonneesGeo a owl:DatatypeProperty ;
+    rdfs:domain :SiteComptage ;
+    rdfs:range xsd:string ;
+    rdfs:label "coordonnées géographiques"@fr .
+
+:sensCirculation a owl:DatatypeProperty ;
+    rdfs:domain :ObservationComptage ;
+    rdfs:range xsd:string ;
+    rdfs:label "sens de circulation"@fr .
