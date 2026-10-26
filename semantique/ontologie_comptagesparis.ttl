@@ -60,6 +60,10 @@
     rdfs:range xsd:string ;
     rdfs:label "nom du site"@fr .
 
+:nomMode a owl:DatatypeProperty ;
+    rdfs:domain :ModeDeplacement ;
+    rdfs:range xsd:string ;
+    rdfs:label "nom du mode de déplacement"@fr .
 :coordonneesGeo a owl:DatatypeProperty ;
     rdfs:domain :SiteComptage ;
     rdfs:range xsd:string ;
