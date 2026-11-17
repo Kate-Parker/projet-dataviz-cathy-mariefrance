@@ -6,17 +6,12 @@ ce jeu de donnees contient + de 2millions de lignes et respecte les prequis pour
 Theme:Mobilité et espace public
 Sujet:Comptages multimodal(velo,trotinette,autobus)etc 
 
-https://opendata.paris.fr/explore/dataset/comptage-multimodal-comptages/information/?disjunctive.mode&disjunctive.trajectoire&disjunctive.voie&disjunctive.sens&disjunctive.label
-
-
-Comptages multimodal (CSV) ─► data lake S3 : bronze ─► silver ─► gold ─► PostgreSQL 
+NYC Taxi (Parquet) ─► data lake S3 : bronze ─► silver ─► gold ─► PostgreSQL ─► Streamlit · Superset · Grafana
                                                      └──► ontologie RDF/OWL ─► graphe de connaissances
 
-
-
 pour le deroule du projet nous avons fais un cahier de charges et attribuer les differents taches;
-
-##Cathy: Bronze
+ 
+## Cathy-Bronze
 
 1. Dépôt GitHub & Versioning
 Initialisation et structure : Création du dépôt, organisation des dossiers (scripts, notebooks, données, ontologie) et configuration des règles de collaboration.
@@ -72,5 +67,12 @@ Fiches KPI (3 à 5)
 Dashboard Streamlit (récit, filtre) et service docker compose 
 Test complet : clone → téléchargement → docker compose up -d → notebooks → dashboard 
 
+Organisation du dépôt
+compose.yaml   .env.example   scripts/   commun/ (code partagé)   grafana/ (configuration)   data/ (non versionné)
+seances/   (un README + les notebooks de chaque séance, publiés au fil du cours)
+mon_travail/   (votre travail : notebooks complétés, captures, livrables)
+plan-b/   (sans Docker : Google Colab)      docs/   (pannes fréquentes)
 
 
+Sources des données
+Open Data - https://opendata.paris.fr/explore/dataset/comptage-multimodal-comptages/information/?disjunctive.mode&disjunctive.trajectoire&disjunctive.voie&disjunctive.sens&disjunctive.label

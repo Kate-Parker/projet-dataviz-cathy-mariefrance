@@ -17,10 +17,11 @@ import os
 import subprocess
 import sys
 
+# pyrefly: ignore[missing-import]
 from pyspark.sql import SparkSession
 
 # --- Chemins -----------------------------------------------------------------
-WORK = "/home/jovyan"
+WORK = "/home/jovyan/work"
 RAW = f"{WORK}/data/raw"                 # fichiers téléchargés (sur le disque)
 BUCKET = "datalake"
 LAKE = f"s3a://{BUCKET}"                 # data lake : s3a://datalake/bronze/..., /silver/..., /gold/...
