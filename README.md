@@ -22,7 +22,7 @@ Les comptages décrivent les passages mesurés par les capteurs. Ils ne donnent 
 
 **Source :** [Comptages multimodaux de la Ville de Paris](https://opendata.paris.fr/explore/dataset/comptage-multimodal-comptages/information/). Les volumes de données et les résultats de qualité sont calculés à l'exécution des notebooks, car ils dépendent du fichier ingéré dans Bronze.
 
-## Livrables Silver
+## Livrables Silver et Gold
 
 - `work/02_silver.ipynb` : typage, règles de qualité, complétion prudente des attributs descriptifs, variables temporelles et géographiques, signalement non destructif des valeurs élevées, écriture de la table Silver et graphique avant/après.
 - `work/03_exploration_silver.ipynb` : exploration des volumes mensuels, profils horaires et sites/types de voie à investiguer.
