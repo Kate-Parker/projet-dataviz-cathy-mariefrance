@@ -23,6 +23,22 @@ Gestion des accès : Ajout du collaborateur -- Laminendao & mariefrance
 2. Script de Téléchargement des Données
 Script de téléchargement des fichiers Comptages multimodaux
 
+Depuis la racine du dépôt, télécharger l'export officiel dans `data/raw/` :
+
+```bash
+bash scripts/telecharger_donnees.sh
+```
+
+Le fichier CSV est ignoré par Git. Pour télécharger une version actualisée en
+remplaçant celle déjà présente :
+
+```bash
+bash scripts/telecharger_donnees.sh --force
+```
+
+Le téléchargement est vérifié avant remplacement et conserve les colonnes
+attendues par le notebook Bronze.
+
 3. Architecture Conteneurisée (docker-compose.yml)
 Déploiement d'un écosystème reproductible via Docker Compose orchestrant trois services clés :
 
