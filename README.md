@@ -6,7 +6,7 @@ ce jeu de donnees contient + de 2millions de lignes et respecte les prequis pour
 Theme:Mobilité et espace public
 Sujet:Comptages multimodal(velo,trotinette,autobus)etc 
 
-NYC Taxi (Parquet) ─► data lake S3 : bronze ─► silver ─► gold ─► PostgreSQL ─► Streamlit · Superset · Grafana
+Comptage Multimodal Paris (Csv) ─► data lake S3 : bronze ─► silver ─► gold ─► PostgreSQL ─► Streamlit · Superset · Grafana
                                                      └──► ontologie RDF/OWL ─► graphe de connaissances
 
 pour le deroule du projet nous avons fais un cahier de charges et attribuer les differents taches;
