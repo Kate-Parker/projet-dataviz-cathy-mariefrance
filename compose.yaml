@@ -15,8 +15,9 @@ services:
       S3_ENDPOINT: http://rustfs:9000
       S3_ACCESS_KEY: ${S3_ACCESS_KEY:-rustfsadmin}
       S3_SECRET_KEY: ${S3_SECRET_KEY:-rustfsadmin}
+      PG_URL: jdbc:postgresql://postgres:5432/${PG_DB:-comptagesmultimodal}
       PG_HOST: postgres
-      PG_DB: ${PG_DB:-openmedic}
+      PG_DB: ${PG_DB:-comptagesmultimodal}
       PG_USER: ${PG_USER:-cours}
       PG_PASSWORD: ${PG_PASSWORD:-cours}
     depends_on:
@@ -53,11 +54,22 @@ services:
     environment:
       POSTGRES_USER: ${PG_USER:-cours}
       POSTGRES_PASSWORD: ${PG_PASSWORD:-cours}
-      POSTGRES_DB: ${PG_DB:-openmedic}
+      POSTGRES_DB: ${PG_DB:-comptagesmultimodal}
     ports:
       - "5432:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
+
+   # --- Console web PostgreSQL : voir les tables, lancer du SQL --------------------
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    ports:
+      - "8080:8080"   # -> http://localhost:8080  (Système PostgreSQL, serveur postgres, cours / cours, base nyctaxi)
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    depends_on:
+      - postgres
 
 volumes:
   ivy-cache:
