@@ -29,7 +29,9 @@ LAKE = f"s3a://{BUCKET}"                 # data lake : s3a://datalake/bronze/...
 S3_ENDPOINT = os.getenv("S3_ENDPOINT", "http://rustfs:9000")
 S3_ACCESS_KEY = os.getenv("S3_ACCESS_KEY", "rustfsadmin")
 S3_SECRET_KEY = os.getenv("S3_SECRET_KEY", "rustfsadmin")
-PG_URL = os.getenv("PG_URL", "jdbc:postgresql://postgres:5432/nyctaxi")
+PG_HOST = os.getenv("PG_HOST", "postgres")
+PG_DB = os.getenv("PG_DB", "comptagemultimodal")
+PG_URL = os.getenv("PG_URL", f"jdbc:postgresql://{PG_HOST}:5432/{PG_DB}")
 PG_PROPS = {
     "user": os.getenv("PG_USER", "cours"),
     "password": os.getenv("PG_PASSWORD", "cours"),
@@ -80,8 +82,8 @@ def _installer_delta_python(version):
         return r.returncode == 0
 
 
-def creer_session(nom="cours", lac=True, delta=True, postgres=True, memoire="4g"):
-    """Crée une session Spark locale, branchée sur le data lake S3 et PostgreSQL."""
+def creer_session(nom="cours", lac=True, delta=True, postgres=True, memoire="4g", master="local[*]"):
+    """Crée une session Spark locale; `master` permet de limiter les workers si besoin."""
     v = _sonder_versions()
     spark_mm = ".".join(v["spark"].split(".")[:2])
     scala_bin = ".".join(v["scala"].split(".")[:2])
@@ -108,7 +110,7 @@ def creer_session(nom="cours", lac=True, delta=True, postgres=True, memoire="4g"
 
     b = (SparkSession.builder
          .appName(nom)
-         .master("local[*]")
+         .master(master)
          .config("spark.driver.memory", memoire)
          .config("spark.sql.session.timeZone", "America/New_York"))
     if paquets:
