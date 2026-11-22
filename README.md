@@ -26,9 +26,13 @@ Les comptages décrivent les passages mesurés par les capteurs. Ils ne donnent 
 
 - `work/02_silver.ipynb` : typage, règles de qualité, complétion prudente des attributs descriptifs, variables temporelles et géographiques, signalement non destructif des valeurs élevées, écriture de la table Silver et graphique avant/après.
 - `work/03_exploration_silver.ipynb` : exploration des volumes mensuels, profils horaires et sites/types de voie à investiguer.
-- `docs/silver.md` : justification des règles et tableau de bilan à renseigner avec les résultats de l'exécution Silver.
+- `docs/silver.md` : justification des règles et bilan mesuré sur l'exécution Silver actuelle.
 - `work/03_gold.ipynb` : agrégats par site, mois, jour/heure et KPI pour alimenter le dashboard à partir de Silver.
 - `docs/gold.md` : dictionnaire des tables Gold, grain des agrégats et limites d'interprétation.
+- `docs/kpi.md` : définition, méthode de calcul, usage et limites des cinq KPI.
+- `work/04_exploration_gold.ipynb` : graphiques d'exploration construits à partir des tables Gold.
+
+Lors de la dernière exécution, 66 des 107 sites actifs n'avaient pas de coordonnées valides : ils sont conservés dans les agrégats, mais doivent être exclus de la carte. Les nombres et KPI de `docs/gold.md` correspondent aux données actuellement présentes dans Bronze et sont à recalculer après toute nouvelle ingestion.
 
 
 

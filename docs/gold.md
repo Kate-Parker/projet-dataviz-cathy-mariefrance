@@ -14,7 +14,7 @@ Le classement garde `type_voie` comme dimension : un site associé à plusieurs 
 
 ## Tables
 
-Les nombres de lignes dépendent des données présentes dans Bronze et seront affichés par le notebook après exécution. Ne pas inscrire de nombres estimés dans ce dictionnaire.
+Les nombres de lignes dépendent des données présentes dans Bronze; le notebook les affiche après chaque exécution. Les résultats ci-dessous sont les mesures de la dernière exécution et doivent être recalculés après une nouvelle ingestion.
 
 ### `gold_sites_classement`
 
@@ -86,9 +86,32 @@ Les lignes sans coordonnées restent dans la table et doivent être filtrées un
 
 Les cinq KPI produits sont le total des comptages, le nombre de sites actifs, le mode au volume le plus élevé, la part de ce mode et l'heure dont le total moyen par site-heure (tous modes réunis) est le plus élevé.
 
+## Vérification de l'exécution actuelle
+
+Avec 12 302 284 lignes Silver, dont 12 798 signalées par `aberrant_q999`, les tables Gold contiennent :
+
+| Table | Lignes vérifiées après écriture et relecture |
+|---|---:|
+| `gold_sites_classement` | 2 888 |
+| `gold_serie_mensuelle` | 572 |
+| `gold_heatmap_heure_jour` | 1 347 |
+| `gold_kpi` | 5 |
+
+Le total `total_usagers` est de 649 841 460 dans Silver retenue, `gold_sites_classement` et `gold_serie_mensuelle`. Les 107 sites actifs comprennent 66 sites sans coordonnées géographiques valides; ils restent disponibles pour les analyses temporelles, mais pas pour la carte. Cette exécution a utilisé Spark 4.3.0 et le repli Parquet, Delta n'étant pas pris en charge par cette version dans `commun.spark_utils`.
+
+| KPI | Valeur de cette exécution |
+|---|---:|
+| Total des véhicules comptés | 649 841 460 |
+| Sites actifs | 107 |
+| Mode au volume le plus élevé | Véhicules légers < 3,5 t |
+| Part du mode principal | 45,68 % |
+| Heure de pointe moyenne | 18 h |
+
 ## Limites d'interprétation
 
 - Un volume élevé n'est pas à lui seul un indicateur de saturation : ni la capacité de la voie ni l'exposition totale des capteurs ne sont mesurées.
 - `moyenne_par_heure` moyenne les heures site-mode disponibles; elle ne prétend pas corriger toutes les différences de couverture et ne doit pas être présentée comme une moyenne d'heures civiles complètes.
 - Les seuils `aberrant_q999` sont heuristiques et calculés par mode en Silver. Les observations signalées peuvent être réintégrées pour une analyse de sensibilité, mais ne figurent pas dans ces tables Gold.
 - La convention Spark `jour_semaine` commence le dimanche (1) ; vérifier les libellés de jour dans le dashboard.
+
+Les définitions et usages des cinq indicateurs de `gold_kpi` sont détaillés dans [`kpi.md`](kpi.md). Des graphiques de vérification des agrégats sont proposés dans `work/04_exploration_gold.ipynb`.

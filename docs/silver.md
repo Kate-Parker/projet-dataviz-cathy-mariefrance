@@ -12,18 +12,20 @@ Exécuter les cellules de `work/02_silver.ipynb` dans l'ordre. Chaque règle cal
 
 | Règle | Justification | Lignes retirées | Lignes restantes |
 |---|---|---:|---:|
-| Départ — Bronze | Nombre de lignes avant nettoyage | À calculer | — |
-| R1 — doublons exacts | Une même ligne source ne doit être conservée qu'une fois | À calculer | À calculer |
-| R2 — trajectoire absente | La trajectoire est nécessaire pour rattacher le comptage à un axe | À calculer | À calculer |
-| R3 — date absente ou illisible | Une date valide est indispensable à l'analyse temporelle | À calculer | À calculer |
-| R4 — identifiant de site absent | Sans identifiant, le comptage ne peut pas être localisé | À calculer | À calculer |
-| R5 — mode absent | Le mode est nécessaire aux comparaisons multimodales | À calculer | À calculer |
-| R6 — comptage absent ou non numérique | La mesure doit pouvoir être interprétée comme un entier | À calculer | À calculer |
-| R7 — comptage négatif | Une valeur négative n'est pas physiquement interprétable | À calculer | À calculer |
-| R8 — complétion des attributs descriptifs | Compléter par site/trajectoire sans retirer de ligne ; laisser les valeurs inconnues nulles | 0 | À calculer |
-| Total — Silver | Nombre de lignes après les règles R1 à R7 | À calculer | À calculer |
+| Départ — Bronze | Nombre de lignes avant nettoyage | 0 | 12 302 768 |
+| R1 — doublons exacts | Une même ligne source ne doit être conservée qu'une fois | 0 | 12 302 768 |
+| R2 — trajectoire absente | La trajectoire est nécessaire pour rattacher le comptage à un axe | 8 | 12 302 760 |
+| R3 — date absente, illisible ou antérieure à 1900 | Une date plausible est indispensable à l'analyse temporelle | 190 | 12 302 570 |
+| R4 — identifiant de site absent | Sans identifiant, le comptage ne peut pas être localisé | 0 | 12 302 570 |
+| R5 — mode absent | Le mode est nécessaire aux comparaisons multimodales | 0 | 12 302 570 |
+| R6 — comptage absent ou non numérique | La mesure doit pouvoir être interprétée comme un entier | 286 | 12 302 284 |
+| R7 — comptage négatif | Une valeur négative n'est pas physiquement interprétable | 0 | 12 302 284 |
+| R8 — complétion des attributs descriptifs | Compléter par site/trajectoire sans retirer de ligne ; laisser les valeurs inconnues nulles | 0 | 12 302 284 |
+| Total — Silver | Nombre de lignes après les règles R1 à R7 | 484 | 12 302 284 |
 
-Copier les valeurs affichées par la dernière cellule de `work/02_silver.ipynb` dans ce tableau après exécution. La complétion R8 rapporte séparément le nombre de valeurs descriptives récupérées.
+La règle R3 rejette aussi les dates antérieures à 1900 : Bronze contient quatre horodatages parsés en année 0001, dont deux restent après R2. Ces dates sont incompatibles avec la période de comptage observée (2011–2026).
+
+Résultats de l'exécution actuelle de `work/02_silver.ipynb` : 43 290 noms de site, 43 288 coordonnées, 0 type de voie et 0 sens de circulation récupérés. Après complétion, il reste respectivement 3 274 742, 3 364 868, 3 318 032 et 3 318 032 valeurs inconnues dans ces champs. Les résultats peuvent varier si les données Bronze changent.
 
 ## Valeurs élevées
 
