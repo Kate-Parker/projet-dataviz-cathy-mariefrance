@@ -4,6 +4,12 @@
 
 `work/03_gold.ipynb` lit la couche Silver au chemin `s3a://datalake/silver/comptage_multimodal_paris` et écrit les tables prêtes pour les analyses et le dashboard sous `s3a://datalake/gold/<nom_de_table>`. Le notebook suit le format actif indiqué par `commun.spark_utils` (Delta quand disponible, Parquet en repli).
 
+## Accès au data lake RustFS
+
+- **Console web locale :** [http://localhost:9001](http://localhost:9001/). Cette URL ouvre l'interface d'administration, pas le point d'accès S3 utilisé par Spark.
+- **Point d'accès S3 dans Compose :** `http://rustfs:9000`, défini par `S3_ENDPOINT`.
+- **Identifiants :** définir `S3_ACCESS_KEY` et `S3_SECRET_KEY` dans le fichier `.env` à la racine du projet. Ce fichier est ignoré par Git; ne pas inscrire le mot de passe dans la documentation ou le code.
+
 Les observations dont `aberrant_q999 = true` sont exclues des agrégats Gold, mais restent dans Silver. La règle est un filtre analytique, pas une suppression ni une validation définitive d'erreur. Le notebook vérifie que les totaux des tables de classement et mensuelle correspondent au total Silver retenu après ce filtre.
 
 ## Convention de mesure horaire
