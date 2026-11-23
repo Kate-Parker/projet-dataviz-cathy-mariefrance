@@ -6,11 +6,15 @@
 
 ## Accès au data lake RustFS
 
-- **Console web locale :** [http://localhost:9001](http://localhost:9001/). Cette URL ouvre l'interface d'administration, pas le point d'accès S3 utilisé par Spark.
+- **Console web locale :** [http://localhost:9001/rustfs/console/](http://localhost:9001/rustfs/console/). Cette URL ouvre l'interface d'administration, pas le point d'accès S3 utilisé par Spark. Selon la version de RustFS, la racine `http://localhost:9001/` peut renvoyer une erreur 403.
 - **Point d'accès S3 dans Compose :** `http://rustfs:9000`, défini par `S3_ENDPOINT`.
 - **Identifiants :** définir `S3_ACCESS_KEY` et `S3_SECRET_KEY` dans le fichier `.env` à la racine du projet. Ce fichier est ignoré par Git; ne pas inscrire le mot de passe dans la documentation ou le code.
 
 Les observations dont `aberrant_q999 = true` sont exclues des agrégats Gold, mais restent dans Silver. La règle est un filtre analytique, pas une suppression ni une validation définitive d'erreur. Le notebook vérifie que les totaux des tables de classement et mensuelle correspondent au total Silver retenu après ce filtre.
+
+## Accès à PostgreSQL et Adminer
+
+Lancer `docker compose up -d`; Adminer est alors disponible à [http://localhost:8080](http://localhost:8080/). Choisir le système PostgreSQL, le serveur `postgres`, la base `nyctaxi` et les identifiants définis par `PG_USER` et `PG_PASSWORD` (valeurs locales par défaut : `cours` / `cours`). PostgreSQL est également joignable depuis l'hôte à `localhost:5432`.
 
 ## Convention de mesure horaire
 

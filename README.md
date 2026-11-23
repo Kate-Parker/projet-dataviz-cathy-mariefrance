@@ -22,6 +22,30 @@ Les comptages décrivent les passages mesurés par les capteurs. Ils ne donnent 
 
 **Source :** [Comptages multimodaux de la Ville de Paris](https://opendata.paris.fr/explore/dataset/comptage-multimodal-comptages/information/). Les volumes de données et les résultats de qualité sont calculés à l'exécution des notebooks, car ils dépendent du fichier ingéré dans Bronze.
 
+## Lancement local
+
+Depuis la racine du dépôt :
+
+```bash
+bash scripts/telecharger_donnees.sh
+docker compose up -d
+```
+
+Le CSV est stocké dans `data/raw/` (ignoré par Git). Pour le remplacer après une mise à jour, utiliser `bash scripts/telecharger_donnees.sh --force`. Les variables locales peuvent être configurées en copiant `.env.example` vers `.env`.
+
+- **Adminer :** [http://localhost:8080](http://localhost:8080/). Choisir le système PostgreSQL, le serveur `postgres`, la base `nyctaxi` et les identifiants définis par `PG_USER` et `PG_PASSWORD` (valeurs locales par défaut : `cours` / `cours`).
+- **PostgreSQL depuis l'hôte :** `localhost:5432`, base `nyctaxi`.
+- **JupyterLab :** [http://localhost:8888/lab](http://localhost:8888/lab), jeton défini par `JUPYTER_TOKEN` (par défaut `cours`).
+- **RustFS :** console [http://localhost:9001/rustfs/console/](http://localhost:9001/rustfs/console/); Spark utilise le point d'accès interne `http://rustfs:9000`.
+
+PostgreSQL initialise sa base et son utilisateur seulement lors de la création d'un volume neuf. Si un ancien volume ne contient pas `nyctaxi`, créer cette base sans supprimer les données existantes :
+
+```bash
+docker compose exec postgres psql -U cours -d postgres -c "CREATE DATABASE nyctaxi OWNER cours"
+```
+
+Adapter l'utilisateur si nécessaire. Modifier `PG_DB`, `PG_USER` ou `PG_PASSWORD` dans `.env` ne modifie pas les bases, utilisateurs ou mots de passe déjà enregistrés dans le volume.
+
 ## Livrables Silver et Gold
 
 - `work/02_silver.ipynb` : typage, règles de qualité, complétion prudente des attributs descriptifs, variables temporelles et géographiques, signalement non destructif des valeurs élevées, écriture de la table Silver et graphique avant/après.
@@ -30,6 +54,7 @@ Les comptages décrivent les passages mesurés par les capteurs. Ils ne donnent 
 - `work/03_gold.ipynb` : agrégats par site, mois, jour/heure et KPI pour alimenter le dashboard à partir de Silver.
 - `docs/gold.md` : dictionnaire des tables Gold, grain des agrégats et limites d'interprétation.
 - `docs/kpi.md` : définition, méthode de calcul, usage et limites des cinq KPI.
+- `docs/audit.md` : état des exigences et différences constatées entre les branches.
 - `work/04_exploration_gold.ipynb` : graphiques d'exploration construits à partir des tables Gold.
 
 Lors de la dernière exécution, 66 des 107 sites actifs n'avaient pas de coordonnées valides : ils sont conservés dans les agrégats, mais doivent être exclus de la carte. Les nombres et KPI de `docs/gold.md` correspondent aux données actuellement présentes dans Bronze et sont à recalculer après toute nouvelle ingestion.

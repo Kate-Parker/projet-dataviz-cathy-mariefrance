@@ -31,6 +31,10 @@ Résultats de l'exécution actuelle de `work/02_silver.ipynb` : 43 290 noms de s
 
 Le notebook calcule un seuil exploratoire égal au 99,9e percentile de chaque mode et ajoute le booléen `aberrant_q999`. Les lignes signalées restent dans Silver : ce seuil ne constitue pas, à lui seul, une preuve d'erreur et ne justifie pas une suppression automatique.
 
+## Comparaison visuelle
+
+Le notebook distingue l'effet du nettoyage Bronze → Silver d'un exemple de perception : les mêmes totaux Silver sont affichés une fois avec un axe tronqué trompeur, puis avec un axe commençant à zéro pour comparer correctement les longueurs des barres.
+
 ## Limites d'interprétation
 
 - Un volume de comptages élevé ne signifie pas nécessairement qu'un axe est saturé : la capacité, la durée de collecte et la couverture des capteurs ne sont pas intégrées dans ces agrégats.
