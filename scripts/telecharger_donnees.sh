@@ -63,7 +63,7 @@ cleanup() {
 trap cleanup 0 HUP INT TERM
 
 if ! curl --fail --location --silent --show-error \
-    --connect-timeout 20 --max-time 300 --retry 2 --retry-delay 2 \
+    --connect-timeout 20 --speed-limit 1024 --speed-time 120 --retry 2 --retry-delay 2 \
     --user-agent 'projet-dataviz-comptages-paris/1.0' \
     --output "$TEMP_FILE" "$URL"; then
     echo "Erreur : le téléchargement du CSV a échoué." >&2

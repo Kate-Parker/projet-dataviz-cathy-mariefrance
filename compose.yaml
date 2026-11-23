@@ -103,8 +103,20 @@ services:
     depends_on:
       - postgres
 
+  fuseki:
+    profiles: ["semantique"]
+    image: stain/jena-fuseki:5.1.0
+    ports:
+      - "127.0.0.1:${FUSEKI_PORT:-3030}:3030"
+    environment:
+      ADMIN_PASSWORD: ${FUSEKI_ADMIN_PASSWORD:-admin}
+      FUSEKI_DATASET_1: comptages
+    volumes:
+      - fuseki-data:/fuseki
+
 volumes:
   ivy-cache:
   lake-data:
   pg-data:
   grafana-data:
+  fuseki-data:
