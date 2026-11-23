@@ -169,6 +169,9 @@ Problématique métier et question centrale;
 -Quels sont les axes et créneaux horaires les plus saturés et sur quel type de voie?
 -Ou et quand la fréquentation des differents modes de deplacement evolue + ou moins et quel secteur
 
+La première question exprime l'objectif initial. Les données disponibles ne
+permettent pas de calculer la saturation ; les analyses comparent les volumes
+observés, comme expliqué dans la section « Persona et question métier ».
 
 2. Notebook Silver : nettoyage et typage, avec le tableau de chaque règle de nettoyage et le nombre de lignes retirées
 3. Notebook d’exploration : graphiques sur les données silver 

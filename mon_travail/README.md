@@ -7,3 +7,6 @@ Ce dossier peut accueillir les captures et autres livrables complémentaires.
 `graphique-streamlit.png` montre le graphique mensuel du dashboard sur les
 données locales déjà chargées ; les résultats changent selon le CSV et les filtres.
 `grafana.png` montre les indicateurs du dashboard Grafana sur ces mêmes données.
+Ces captures illustrent une exécution antérieure : le CSV local utilisé alors
+comporte au moins une ligne mal formée. Les résultats doivent être recalculés
+à partir d'un export vérifié avant toute conclusion métier.

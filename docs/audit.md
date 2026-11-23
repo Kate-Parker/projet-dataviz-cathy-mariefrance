@@ -19,7 +19,7 @@ Cet audit compare les contenus des branches distantes `main`, `silver` et `featu
 | Export Gold vers PostgreSQL | Notebook d'export exécuté sur `silver` : 2 888 lignes pour les sites, 572 pour la série mensuelle, 1 347 pour le profil et 5 KPI, vérifiés après relecture. La branche Gold propose également son propre export. |
 | Dashboard Streamlit avec récit et filtres | Application et service du profil `app` ajoutés sur `silver`. |
 | Dashboard Grafana | Service du profil `bi`, source PostgreSQL et tableau de bord provisionnés sur `silver` ; les six requêtes ont retourné des données sur l'exécution locale. |
-| Test complet clone → téléchargement → Compose → notebooks → dashboard | Non réalisé depuis un clone neuf. |
+| Test complet clone → téléchargement → Compose → notebooks → dashboard | Le clonage GitHub de `silver` et la validation de la configuration Compose ont réussi. L'enchaînement complet depuis ce clone n'est pas encore validé. |
 | Organisation complémentaire | Sur `silver`, les dossiers `seances/`, `mon_travail/` et `plan-b/` décrivent les livrables existants et les travaux manquants ; le plan B Colab autonome reste à réaliser. Une capture du graphique Streamlit et un guide de pannes sont présents. |
 | Fuseki et Superset | Un service Fuseki optionnel est configuré sur `silver`. L'ontologie et l'extrait du notebook ont été chargés dans un jeu isolé ; une requête y a compté 200 observations. Ce n'est pas le graphe complet. Superset n'est pas configuré. |
 
@@ -27,5 +27,6 @@ Cet audit compare les contenus des branches distantes `main`, `silver` et `featu
 
 - Les branches divergent : `main` apporte notamment le téléchargement et une version actualisée des requêtes sémantiques ; `feature/gold-aggregats` apporte notamment l'export PostgreSQL. Aucune fusion n'a été effectuée.
 - Les configurations PostgreSQL des branches distantes ne sont pas toutes cohérentes. Sur la branche locale `silver`, Compose et l'URL JDBC utilisent désormais `PG_DB`, avec `nyctaxi` par défaut. Un volume PostgreSQL déjà initialisé ne crée pas automatiquement une nouvelle base.
+- Le CSV local contient au moins une ligne mal formée. Les tableaux et captures issus de l'ingestion antérieure doivent être recalculés depuis un export vérifié avant d'être utilisés pour une conclusion métier.
 - Le code partagé fixe le fuseau Spark à `America/New_York` ; vérifier ce choix avec les horodatages de la source parisienne avant de conclure sur les heures de pointe.
 - Les adresses de services ne prouvent pas que les livrables applicatifs ou sémantiques sont complets. Le notebook exécute ses requêtes avec RDFLib ; l'export vers Fuseki concerne seulement l'extrait sélectionné.
