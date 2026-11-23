@@ -16,6 +16,8 @@ Les observations dont `aberrant_q999 = true` sont exclues des agrégats Gold, ma
 
 Lancer `docker compose up -d`; Adminer est alors disponible à [http://localhost:8080](http://localhost:8080/). Choisir le système PostgreSQL, le serveur `postgres`, la base `nyctaxi` et les identifiants définis par `PG_USER` et `PG_PASSWORD` (valeurs locales par défaut : `cours` / `cours`). PostgreSQL est également joignable depuis l'hôte à `localhost:5432`.
 
+Après le notebook Gold, exécuter `work/05_export_postgres.ipynb` pour remplacer les quatre tables `public.gold_*` correspondantes et vérifier leur nombre de lignes après relecture. Le notebook ne remplace pas les autres tables PostgreSQL. Les dashboards Streamlit et Grafana lisent ces tables ; voir les commandes de démarrage dans le README.
+
 ## Convention de mesure horaire
 
 Silver peut contenir plusieurs trajectoires pour un site et un mode au même instant. Pour les séries mensuelles et la carte de chaleur, ces observations sont additionnées d'abord au grain **site × mode × heure mesurée**. Les moyennes portent ensuite sur ces heures site-mode effectivement observées; les heures sans donnée ne sont pas inventées. Cela limite le biais lié aux durées de collecte différentes, sans remplacer une mesure d'exposition ou de capacité routière.

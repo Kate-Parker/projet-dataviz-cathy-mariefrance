@@ -69,7 +69,42 @@ services:
     depends_on:
       - postgres
 
+  streamlit:
+    profiles: ["app"]
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    ports:
+      - "127.0.0.1:${STREAMLIT_PORT:-8501}:8501"
+    environment:
+      PG_HOST: postgres
+      PG_DB: ${PG_DB:-nyctaxi}
+      PG_USER: ${PG_USER:-cours}
+      PG_PASSWORD: ${PG_PASSWORD:-cours}
+    depends_on:
+      - postgres
+
+  grafana:
+    profiles: ["bi"]
+    image: grafana/grafana:11.6.1
+    ports:
+      - "127.0.0.1:${GRAFANA_PORT:-3000}:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      PG_DB: ${PG_DB:-nyctaxi}
+      PG_USER: ${PG_USER:-cours}
+      PG_PASSWORD: ${PG_PASSWORD:-cours}
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - postgres
+
 volumes:
   ivy-cache:
   lake-data:
   pg-data:
+  grafana-data:

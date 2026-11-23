@@ -38,6 +38,21 @@ Le CSV est stocké dans `data/raw/` (ignoré par Git). Pour le remplacer après 
 - **JupyterLab :** [http://localhost:8888/lab](http://localhost:8888/lab), jeton défini par `JUPYTER_TOKEN` (par défaut `cours`).
 - **RustFS :** console [http://localhost:9001/rustfs/console/](http://localhost:9001/rustfs/console/); Spark utilise le point d'accès interne `http://rustfs:9000`.
 
+### Tableaux de bord et requêtes SPARQL
+
+1. Dans Jupyter, exécuter dans l'ordre le notebook Bronze, `work/02_silver.ipynb`, puis `work/03_gold.ipynb`.
+2. Exécuter `work/05_export_postgres.ipynb`. Il remplace les quatre tables `gold_*` de PostgreSQL par celles du data lake et vérifie leur nombre de lignes.
+3. Démarrer les tableaux de bord :
+
+   ```bash
+   docker compose --profile app --profile bi up -d --build
+   ```
+
+4. Ouvrir Streamlit sur [http://localhost:8501](http://localhost:8501/) et Grafana sur [http://localhost:3000](http://localhost:3000/). Le compte Grafana local par défaut est `admin` / `admin` ; modifier ces valeurs dans `.env` avant un usage autre que local. Le mot de passe n'est initialisé qu'à la création du volume Grafana ; ensuite, le modifier dans Grafana. Dans Grafana, ouvrir le dossier **Mobilité**, puis **Comptages multimodaux à Paris**.
+5. Pour les trois requêtes SPARQL, exécuter `semantique/requete_1_modes.sparql.ipynb` après Silver. Il charge jusqu'à 200 observations Silver de janvier 2025 dans un graphe RDF en mémoire : les résultats concernent cet extrait, pas tout le jeu de données.
+
+Les KPI Streamlit sont globaux. Les filtres année et mode s'appliquent aux graphiques mensuels et au classement ; le profil jour/heure n'est filtrable que par mode car sa table Gold ne contient pas l'année. Les dashboards signalent les limites d'interprétation : un volume n'est pas une mesure de saturation.
+
 PostgreSQL initialise sa base et son utilisateur seulement lors de la création d'un volume neuf. Si un ancien volume ne contient pas `nyctaxi`, créer cette base sans supprimer les données existantes :
 
 ```bash
@@ -56,6 +71,7 @@ Adapter l'utilisateur si nécessaire. Modifier `PG_DB`, `PG_USER` ou `PG_PASSWOR
 - `docs/kpi.md` : définition, méthode de calcul, usage et limites des cinq KPI.
 - `docs/audit.md` : état des exigences et différences constatées entre les branches.
 - `work/04_exploration_gold.ipynb` : graphiques d'exploration construits à partir des tables Gold.
+- `work/05_export_postgres.ipynb` : export et relecture des tables Gold dans PostgreSQL.
 
 Lors de la dernière exécution, 66 des 107 sites actifs n'avaient pas de coordonnées valides : ils sont conservés dans les agrégats, mais doivent être exclus de la carte. Les nombres et KPI de `docs/gold.md` correspondent aux données actuellement présentes dans Bronze et sont à recalculer après toute nouvelle ingestion.
 
