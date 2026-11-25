@@ -106,6 +106,40 @@ st.altair_chart(
     use_container_width=True,
 )
 
+st.subheader("Carte des sites aux volumes les plus élevés")
+sites_cartographiables = classement.dropna(subset=["latitude", "longitude"]).copy()
+sites_cartographiables = sites_cartographiables[
+    sites_cartographiables["latitude"].between(-90, 90)
+    & sites_cartographiables["longitude"].between(-180, 180)
+]
+carte = (sites_cartographiables
+         .groupby(["identifiant_site", "site", "latitude", "longitude"], as_index=False)["total_usagers"]
+         .sum().nlargest(10, "total_usagers"))
+if carte.empty:
+    st.warning("Aucun site de cette sélection ne possède de coordonnées valides.")
+else:
+    st.caption(
+        f"Les 10 sites cartographiables les plus élevés parmi "
+        f"{sites_cartographiables['identifiant_site'].nunique()} sites géolocalisés. "
+        "Les sites sans coordonnées restent présents dans le classement, mais pas sur la carte."
+    )
+    st.map(
+        carte,
+        latitude="latitude",
+        longitude="longitude",
+        size="total_usagers",
+        color="#3B82F6",
+        zoom=11,
+    )
+    site_a_examiner = carte.iloc[0]
+    st.info(
+        f"**Piste d'analyse :** examiner d'abord « {site_a_examiner['site']} », "
+        f"qui présente le volume cumulé le plus élevé parmi les sites cartographiables "
+        f"({site_a_examiner['total_usagers']:,.0f} véhicules comptés). "
+        "Comparer les périodes et durées de mesure, puis vérifier la couverture des capteurs "
+        "et la capacité de la voie avant toute décision d'aménagement."
+    )
+
 st.header("À quels moments les comptages sont-ils élevés ?")
 st.caption("Profil calculé sur toutes les années ; seul le filtre de mode s'applique à ce graphique.")
 profil = profil[profil["mode_deplacement"].isin(modes_choisis)]

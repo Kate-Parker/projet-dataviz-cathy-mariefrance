@@ -98,9 +98,11 @@ Les lignes sans coordonnées restent dans la table et doivent être filtrées un
 
 Les cinq KPI produits sont le total des comptages, le nombre de sites actifs, le mode au volume le plus élevé, la part de ce mode et l'heure dont le total moyen par site-heure (tous modes réunis) est le plus élevé.
 
-## Vérification de l'exécution actuelle
+## Résultats de l'exécution antérieure (historique)
 
-Avec 12 302 284 lignes Silver, dont 12 798 signalées par `aberrant_q999`, les tables Gold contiennent :
+Ces résultats sont ceux d'une exécution sur un Bronze antérieur de 12 302 768 lignes. Le CSV local examiné depuis est interrompu et ne permet pas de confirmer ces agrégats. Après téléchargement et ingestion d'un export complet, réexécuter Silver, Gold et l'export PostgreSQL, puis remplacer ces chiffres par les comptages mesurés.
+
+Avec 12 302 284 lignes Silver, dont 12 798 signalées par `aberrant_q999`, les tables Gold contenaient :
 
 | Table | Lignes vérifiées après écriture et relecture |
 |---|---:|

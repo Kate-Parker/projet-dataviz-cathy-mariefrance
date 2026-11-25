@@ -16,22 +16,26 @@ Comptages multimodal (CSV) ─► data lake S3 : bronze ─► silver ─► gol
 
 **Persona :** responsable de la mobilité urbaine à la Ville de Paris, qui doit repérer les sites et périodes nécessitant une analyse plus approfondie pour l'aménagement et la gestion des déplacements.
 
+**Rythme de décision retenu pour le projet :** revue opérationnelle hebdomadaire des comptages, puis arbitrages d'aménagement à cadence trimestrielle. Cette cadence est une hypothèse de conception du dashboard, pas une fréquence fournie par le jeu de données.
+
 **Question principale :** quels sites et types de voie enregistrent les volumes de comptage les plus élevés, à quels jours et horaires, et comment ces volumes évoluent-ils selon le mode de déplacement ?
 
 Les comptages décrivent les passages mesurés par les capteurs. Ils ne donnent pas à eux seuls la capacité d'un axe ni son taux de saturation ; les résultats servent à identifier des tendances et des zones à examiner, en tenant compte de la couverture et des périodes de collecte.
 
-**Source :** [Comptages multimodaux de la Ville de Paris](https://opendata.paris.fr/explore/dataset/comptage-multimodal-comptages/information/). Les volumes de données et les résultats de qualité sont calculés à l'exécution des notebooks, car ils dépendent du fichier ingéré dans Bronze.
+**Jeu de données :** le jeu ouvert [Comptages multimodaux de la Ville de Paris](https://opendata.paris.fr/explore/dataset/comptage-multimodal-comptages/information/) est téléchargé par le script ci-dessous. Il fournit une dimension temporelle (`t`, date et heure) et une dimension géographique (`coordonnees_geo`, coordonnées latitude/longitude). La métadonnée de l'API annonçait 14 199 484 enregistrements lors de la vérification ; le script contrôle chaque ligne et exige au moins 2 millions de lignes. Ce n'est pas le jeu NYC Taxi. Les nombres réellement ingérés et les résultats de qualité sont calculés dans les notebooks.
 
 ## Lancement local
 
 Depuis la racine du dépôt :
+
+**Prérequis :** Docker avec Compose v2, Bash, `curl` et Python 3 pour valider l'export. Sous Windows, lancer ces commandes depuis WSL ou Git Bash.
 
 ```bash
 bash scripts/telecharger_donnees.sh
 docker compose up -d
 ```
 
-Le CSV est stocké dans `data/raw/` (ignoré par Git). Pour le remplacer après une mise à jour, utiliser `bash scripts/telecharger_donnees.sh --force`. Les variables locales peuvent être configurées en copiant `.env.example` vers `.env`.
+Le CSV est stocké dans `data/raw/` (ignoré par Git). Le téléchargement n'est installé qu'après vérification des en-têtes, des 10 champs sur chaque ligne et du nombre de lignes annoncé par l'API (au moins 2 millions). Pour le remplacer après une mise à jour, utiliser `bash scripts/telecharger_donnees.sh --force`. Les variables locales peuvent être configurées en copiant `.env.example` vers `.env`.
 
 ### Exécuter le parcours Delta sans toucher aux données existantes
 
@@ -98,7 +102,7 @@ dans le même graphe sans les gérer, car leurs identifiants d'observation se
 recoupent. Pour l'environnement Delta isolé, ajouter le profil `semantique` à
 la commande Compose isolée et utiliser le port `13030`.
 
-Les KPI Streamlit sont globaux. Les filtres année et mode s'appliquent aux graphiques mensuels et au classement ; le profil jour/heure n'est filtrable que par mode car sa table Gold ne contient pas l'année. Les dashboards signalent les limites d'interprétation : un volume n'est pas une mesure de saturation.
+Le dashboard Streamlit raconte le contexte, les constats et une piste d'analyse : évolution mensuelle, classement des sites, carte des sites aux volumes les plus élevés et carte de chaleur jour/heure. Les sites sans coordonnées valides restent dans le classement, mais sont écartés de la carte. Les KPI sont globaux. Les filtres année et mode s'appliquent aux graphiques mensuels et au classement/carte ; le profil jour/heure n'est filtrable que par mode car sa table Gold ne contient pas l'année. Les volumes ne sont pas interprétés comme une mesure de saturation.
 
 PostgreSQL initialise sa base et son utilisateur seulement lors de la création d'un volume neuf. Si un ancien volume ne contient pas `nyctaxi`, créer cette base sans supprimer les données existantes :
 

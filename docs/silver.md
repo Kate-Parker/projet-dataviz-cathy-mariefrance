@@ -10,6 +10,8 @@ Les champs descriptifs manquants (`nom_du_site`, `type_voie`, `sens_de_circulati
 
 Exécuter les cellules de `work/02_silver.ipynb` dans l'ordre. Chaque règle calcule le nombre de lignes restantes et retirées sur le jeu réellement lu depuis Bronze. Les résultats ne sont pas préremplis, car le fichier source peut évoluer entre deux exécutions.
 
+> **Résultats historiques :** le tableau ci-dessous provient d'une exécution antérieure sur un Bronze de 12 302 768 lignes. Le CSV local examiné depuis s'interrompt au milieu de l'enregistrement 6 151 385 ; ces chiffres ne décrivent donc pas ce fichier et doivent être recalculés après une ingestion complète.
+
 | Règle | Justification | Lignes retirées | Lignes restantes |
 |---|---|---:|---:|
 | Départ — Bronze | Nombre de lignes avant nettoyage | 0 | 12 302 768 |
@@ -25,7 +27,7 @@ Exécuter les cellules de `work/02_silver.ipynb` dans l'ordre. Chaque règle cal
 
 La règle R3 rejette aussi les dates antérieures à 1900 : Bronze contient quatre horodatages parsés en année 0001, dont deux restent après R2. Ces dates sont incompatibles avec la période de comptage observée (2011–2026).
 
-Résultats de l'exécution actuelle de `work/02_silver.ipynb` : 43 290 noms de site, 43 288 coordonnées, 0 type de voie et 0 sens de circulation récupérés. Après complétion, il reste respectivement 3 274 742, 3 364 868, 3 318 032 et 3 318 032 valeurs inconnues dans ces champs. Les résultats peuvent varier si les données Bronze changent.
+Résultats historiques de `work/02_silver.ipynb` : 43 290 noms de site, 43 288 coordonnées, 0 type de voie et 0 sens de circulation récupérés. Après complétion, il reste respectivement 3 274 742, 3 364 868, 3 318 032 et 3 318 032 valeurs inconnues dans ces champs. Ces nombres doivent être recalculés avec le prochain Bronze complet.
 
 ## Valeurs élevées
 
