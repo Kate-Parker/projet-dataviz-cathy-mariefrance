@@ -74,7 +74,7 @@ conteneurs sans supprimer leurs volumes, utiliser `docker compose -p dataviz-del
 ### Tableaux de bord et requêtes SPARQL
 
 1. Pour créer de nouvelles tables, utiliser l'environnement Delta isolé décrit ci-dessus et exécuter dans l'ordre `work/notebook_b.ipynb`, `work/02_silver.ipynb`, puis `work/03_gold.ipynb`. Les dashboards de l'environnement habituel restent utilisables avec leurs tables PostgreSQL déjà chargées.
-2. Exécuter `work/05_export_postgres.ipynb`. Il remplace les quatre tables `gold_*` de PostgreSQL par celles du data lake et vérifie leur nombre de lignes.
+2. Exécuter `work/05_export_postgres.ipynb`. Il remplace les six tables `gold_*` de PostgreSQL par celles du data lake et vérifie leur nombre de lignes.
 3. Pour les tables PostgreSQL déjà chargées dans l'environnement habituel, démarrer les tableaux de bord :
 
    ```bash
@@ -116,8 +116,8 @@ Adapter l'utilisateur si nécessaire. Modifier `PG_DB`, `PG_USER` ou `PG_PASSWOR
 
 - `work/02_silver.ipynb` : typage, règles de qualité, complétion prudente des attributs descriptifs, variables temporelles et géographiques, signalement non destructif des valeurs élevées, écriture de la table Silver et graphique avant/après.
 - `work/03_exploration_silver.ipynb` : exploration des volumes mensuels, profils horaires et sites/types de voie à investiguer.
-- `docs/silver.md` : justification des règles et bilan mesuré sur l'exécution Silver actuelle.
-- `work/03_gold.ipynb` : agrégats par site, mois, jour/heure et KPI pour alimenter le dashboard à partir de Silver.
+- `docs/silver.md` : justification des règles et bilan d'une exécution Silver antérieure.
+- `work/03_gold.ipynb` : agrégats par site, mois, jour et jour/heure, ainsi que les KPI, à partir de Silver.
 - `docs/gold.md` : dictionnaire des tables Gold, grain des agrégats et limites d'interprétation.
 - `docs/kpi.md` : définition, méthode de calcul, usage et limites des cinq KPI.
 - `docs/audit.md` : état des exigences et différences constatées entre les branches.
@@ -125,7 +125,7 @@ Adapter l'utilisateur si nécessaire. Modifier `PG_DB`, `PG_USER` ou `PG_PASSWOR
 - `work/04_exploration_gold.ipynb` : graphiques d'exploration construits à partir des tables Gold.
 - `work/05_export_postgres.ipynb` : export et relecture des tables Gold dans PostgreSQL.
 
-Lors de la dernière exécution, 66 des 107 sites actifs n'avaient pas de coordonnées valides : ils sont conservés dans les agrégats, mais doivent être exclus de la carte. Les nombres et KPI de `docs/gold.md` correspondent aux données actuellement présentes dans Bronze et sont à recalculer après toute nouvelle ingestion.
+Lors d'une exécution antérieure, 66 des 107 sites actifs n'avaient pas de coordonnées valides : ils sont conservés dans les agrégats, mais doivent être exclus de la carte. Les nombres et KPI de `docs/gold.md` sont historiques et doivent être recalculés après ingestion d'un export complet. Les nouveaux agrégats quotidiens et mensuels par site ont été testés sur un extrait synthétique ; le parcours complet sur un export valide reste à vérifier.
 
 
 

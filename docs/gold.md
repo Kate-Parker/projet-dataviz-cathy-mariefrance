@@ -16,7 +16,7 @@ Les observations dont `aberrant_q999 = true` sont exclues des agrégats Gold, ma
 
 Lancer `docker compose up -d`; Adminer est alors disponible à [http://localhost:8080](http://localhost:8080/). Choisir le système PostgreSQL, le serveur `postgres`, la base `nyctaxi` et les identifiants définis par `PG_USER` et `PG_PASSWORD` (valeurs locales par défaut : `cours` / `cours`). PostgreSQL est également joignable depuis l'hôte à `localhost:5432`.
 
-Après le notebook Gold, exécuter `work/05_export_postgres.ipynb` pour remplacer les quatre tables `public.gold_*` correspondantes et vérifier leur nombre de lignes après relecture. Le notebook ne remplace pas les autres tables PostgreSQL. Les dashboards Streamlit et Grafana lisent ces tables ; voir les commandes de démarrage dans le README.
+Après le notebook Gold, exécuter `work/05_export_postgres.ipynb` pour remplacer les six tables `public.gold_*` correspondantes et vérifier leur nombre de lignes après relecture. Le notebook ne remplace pas les autres tables PostgreSQL. Les dashboards Streamlit et Grafana lisent les quatre tables initiales ; voir les commandes de démarrage dans le README.
 
 ## Convention de mesure horaire
 
@@ -26,7 +26,7 @@ Le classement garde `type_voie` comme dimension : un site associé à plusieurs 
 
 ## Tables
 
-Les nombres de lignes dépendent des données présentes dans Bronze; le notebook les affiche après chaque exécution. Les résultats ci-dessous sont les mesures de la dernière exécution et doivent être recalculés après une nouvelle ingestion.
+Les nombres de lignes dépendent des données présentes dans Bronze; le notebook les affiche après chaque exécution. Les résultats ci-dessous sont historiques et doivent être recalculés après une nouvelle ingestion.
 
 ### `gold_sites_classement`
 
@@ -49,6 +49,20 @@ Les nombres de lignes dépendent des données présentes dans Bronze; le noteboo
 | `nb_heures_mesurees` | long | Nombre d'heures distinctes observées pour ce groupe. |
 
 Les lignes sans coordonnées restent dans la table et doivent être filtrées uniquement pour l'affichage cartographique.
+
+### `gold_sites_mensuel`
+
+- **Grain :** une ligne par site, mode, année et mois, tous types de voie confondus.
+- **Champs :** identifiant et nom du site, coordonnées, `geo_connue`, `mode_deplacement`, `annee`, `mois`, `total_usagers`, `moyenne_par_heure`, `nb_heures_mesurees`, `rang`.
+- **Rang :** classement par volume décroissant pour chaque mois et mode ; les ex æquo partagent le même rang.
+
+### `gold_serie_quotidienne`
+
+- **Grain :** une ligne par date locale (`jour`) et mode de déplacement.
+- **Champs :** `jour`, `mode_deplacement`, `total_usagers`, `nb_sites_actifs`, `moyenne_par_heure` et `nb_sites_heures_mesurees`.
+- **Question :** comment les volumes journaliers et la couverture évoluent-ils au fil du temps ?
+
+Les deux tables ci-dessus ont été vérifiées sur un extrait synthétique ; leur production et leur export sur le jeu complet restent à valider.
 
 ### `gold_serie_mensuelle`
 
