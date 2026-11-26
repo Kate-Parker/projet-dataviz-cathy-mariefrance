@@ -23,7 +23,7 @@ from pyspark.sql import SparkSession
 # --- Chemins -----------------------------------------------------------------
 WORK = "/home/jovyan/work"
 RAW = f"{WORK}/data/raw"                 # fichiers téléchargés (sur le disque)
-BUCKET = "datalake"
+BUCKET = os.getenv("S3_BUCKET", "datalake")
 LAKE = f"s3a://{BUCKET}"                 # data lake : s3a://datalake/bronze/..., /silver/..., /gold/...
 
 # --- Connexions (fournies par compose.yaml) ----------------------------------

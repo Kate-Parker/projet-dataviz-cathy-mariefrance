@@ -1,0 +1,60 @@
+{
+  "uid": "comptages-paris",
+  "title": "Comptages multimodaux à Paris",
+  "description": "Volumes observés et horaires moyens ; ils ne mesurent pas la saturation.",
+  "schemaVersion": 39,
+  "version": 1,
+  "timezone": "Europe/Paris",
+  "time": {"from": "2011-01-01T00:00:00.000Z", "to": "now"},
+  "tags": ["mobilité", "gold"],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Total des véhicules comptés",
+      "type": "stat",
+      "gridPos": {"x": 0, "y": 0, "w": 8, "h": 5},
+      "datasource": {"type": "postgres", "uid": "postgres-gold"},
+      "targets": [{"refId": "A", "format": "table", "rawQuery": true, "rawSql": "SELECT valeur_numerique AS \"Véhicules comptés\" FROM gold_kpi WHERE kpi_id = 'total_usagers'"}]
+    },
+    {
+      "id": 2,
+      "title": "Sites actifs",
+      "type": "stat",
+      "gridPos": {"x": 8, "y": 0, "w": 8, "h": 5},
+      "datasource": {"type": "postgres", "uid": "postgres-gold"},
+      "targets": [{"refId": "A", "format": "table", "rawQuery": true, "rawSql": "SELECT valeur_numerique AS \"Sites actifs\" FROM gold_kpi WHERE kpi_id = 'sites_actifs'"}]
+    },
+    {
+      "id": 3,
+      "title": "Heure de pointe moyenne",
+      "type": "stat",
+      "gridPos": {"x": 16, "y": 0, "w": 8, "h": 5},
+      "datasource": {"type": "postgres", "uid": "postgres-gold"},
+      "targets": [{"refId": "A", "format": "table", "rawQuery": true, "rawSql": "SELECT valeur_numerique AS \"Heure locale\" FROM gold_kpi WHERE kpi_id = 'heure_pointe_moyenne'"}]
+    },
+    {
+      "id": 4,
+      "title": "Évolution mensuelle par mode",
+      "type": "timeseries",
+      "gridPos": {"x": 0, "y": 5, "w": 24, "h": 9},
+      "datasource": {"type": "postgres", "uid": "postgres-gold"},
+      "targets": [{"refId": "A", "format": "time_series", "rawQuery": true, "rawSql": "SELECT make_date(annee, mois, 1)::timestamp AS \"time\", mode_deplacement AS metric, total_usagers AS value FROM gold_serie_mensuelle ORDER BY 1"}]
+    },
+    {
+      "id": 5,
+      "title": "Sites aux volumes mesurés les plus élevés",
+      "type": "table",
+      "gridPos": {"x": 0, "y": 14, "w": 12, "h": 9},
+      "datasource": {"type": "postgres", "uid": "postgres-gold"},
+      "targets": [{"refId": "A", "format": "table", "rawQuery": true, "rawSql": "SELECT identifiant_site, COALESCE(nom_du_site, identifiant_site) AS site, SUM(total_usagers) AS vehicules FROM gold_sites_classement GROUP BY identifiant_site, nom_du_site ORDER BY vehicules DESC LIMIT 10"}]
+    },
+    {
+      "id": 6,
+      "title": "Profil jour et heure par mode",
+      "type": "table",
+      "gridPos": {"x": 12, "y": 14, "w": 12, "h": 9},
+      "datasource": {"type": "postgres", "uid": "postgres-gold"},
+      "targets": [{"refId": "A", "format": "table", "rawQuery": true, "rawSql": "SELECT mode_deplacement, jour_semaine, heure, moyenne_par_heure, nb_sites_heures_mesurees FROM gold_heatmap_heure_jour ORDER BY moyenne_par_heure DESC LIMIT 30"}]
+    }
+  ]
+}
