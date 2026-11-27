@@ -66,6 +66,12 @@ Streamlit utilise alors [http://localhost:18501](http://localhost:18501/) et
 Grafana [http://localhost:13000](http://localhost:13000/). Pour arrêter ces
 conteneurs sans supprimer leurs volumes, utiliser `docker compose -p dataviz-delta -f compose.yaml -f compose.delta.yaml stop`.
 
+Le fichier `compose.validation-ports.yaml` fournit les mêmes ports locaux
+isolés pour une configuration Compose de validation ; ces ports ne doivent pas
+déjà être occupés par un autre projet. Il configure les ports, pas les données.
+Pour exécuter le parcours Delta, continuer à utiliser `compose.delta.yaml`,
+qui sélectionne aussi l'image Spark compatible.
+
 - **Adminer :** [http://localhost:8080](http://localhost:8080/). Choisir le système PostgreSQL, le serveur `postgres`, la base `nyctaxi` et les identifiants définis par `PG_USER` et `PG_PASSWORD` (valeurs locales par défaut : `cours` / `cours`).
 - **PostgreSQL depuis l'hôte :** `localhost:5432`, base `nyctaxi`.
 - **JupyterLab :** [http://localhost:8888/lab](http://localhost:8888/lab), jeton défini par `JUPYTER_TOKEN` (par défaut `cours`).
