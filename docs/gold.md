@@ -26,7 +26,7 @@ Le classement garde `type_voie` comme dimension : un site associé à plusieurs 
 
 ## Tables
 
-Les nombres de lignes dépendent des données présentes dans Bronze; le notebook les affiche après chaque exécution. Les résultats ci-dessous sont les mesures de la dernière exécution et doivent être recalculés après une nouvelle ingestion.
+Les nombres de lignes dépendent des données présentes dans Bronze; le notebook les affiche après chaque exécution. Les résultats ci-dessous sont historiques et doivent être recalculés après une nouvelle ingestion.
 
 ### `gold_sites_classement`
 
@@ -100,7 +100,7 @@ Les cinq KPI produits sont le total des comptages, le nombre de sites actifs, le
 
 ## Résultats de l'exécution antérieure (historique)
 
-Ces résultats sont ceux d'une exécution sur un Bronze antérieur de 12 302 768 lignes. Le CSV local examiné depuis est interrompu et ne permet pas de confirmer ces agrégats. Après téléchargement et ingestion d'un export complet, réexécuter Silver, Gold et l'export PostgreSQL, puis remplacer ces chiffres par les comptages mesurés.
+Ces résultats proviennent d'un Bronze antérieur de 12 302 768 lignes. Le CSV local examiné depuis est interrompu et ne permet pas de confirmer ces agrégats. Après téléchargement et ingestion d'un export complet, réexécuter Silver, Gold et l'export PostgreSQL et recalculer ces chiffres.
 
 Avec 12 302 284 lignes Silver, dont 12 798 signalées par `aberrant_q999`, les tables Gold contenaient :
 

@@ -56,8 +56,35 @@ if any(table.empty for table in (sites, mensuel, profil, kpi)):
 
 st.header("Vue d'ensemble")
 st.caption("Les cinq indicateurs ci-dessous couvrent toute la période et tous les modes, indépendamment des filtres.")
-colonnes = st.columns(5)
-for colonne, (_, indicateur) in zip(colonnes, kpi.sort_values("kpi_id").iterrows()):
+total_kpi = kpi[kpi["kpi_id"] == "total_usagers"]
+if len(total_kpi) != 1:
+    st.error("L'indicateur du total des véhicules est absent ou présent plusieurs fois dans Gold.")
+    st.stop()
+
+indicateur = total_kpi.iloc[0]
+nombre = f'{indicateur["valeur_numerique"]:,.0f}'.replace(",", " ")
+st.metric(indicateur["libelle"], f'{nombre} {indicateur["unite"]}', help=indicateur["definition"])
+
+repartition_modes = mensuel.groupby("mode_deplacement", as_index=False)["total_usagers"].sum()
+st.subheader("Répartition du total par mode")
+st.caption(
+    "Toute la période et tous les modes, indépendamment des filtres. "
+    "Les différences peuvent refléter la durée de mesure et la couverture des capteurs."
+)
+st.altair_chart(
+    alt.Chart(repartition_modes).mark_bar().encode(
+        x=alt.X("total_usagers:Q", title="Véhicules comptés"),
+        y=alt.Y("mode_deplacement:N", sort="-x", title="Mode"),
+        tooltip=[
+            alt.Tooltip("mode_deplacement:N", title="Mode"),
+            alt.Tooltip("total_usagers:Q", title="Véhicules comptés", format=",.0f"),
+        ],
+    ),
+    use_container_width=True,
+)
+
+colonnes = st.columns(4)
+for colonne, (_, indicateur) in zip(colonnes, kpi[kpi["kpi_id"] != "total_usagers"].sort_values("kpi_id").iterrows()):
     valeur = indicateur["valeur_texte"]
     if pd.isna(valeur):
         nombre = f'{indicateur["valeur_numerique"]:,.2f}'.rstrip("0").rstrip(".")
@@ -79,16 +106,20 @@ if series.empty or classement.empty:
     st.warning("Aucun comptage pour cette sélection.")
     st.stop()
 
-st.header("Comment les volumes évoluent-ils ?")
-st.caption("Sommes mensuelles relevées ; les variations peuvent aussi refléter la couverture des capteurs.")
+st.header("Comment les volumes évoluent-ils par mode ?")
+st.caption(
+    "Une courbe par mode, avec une échelle verticale propre à chaque graphique. "
+    "Les variations peuvent aussi refléter la couverture des capteurs."
+)
 series["date"] = pd.to_datetime(dict(year=series["annee"], month=series["mois"], day=1))
 st.altair_chart(
     alt.Chart(series).mark_line(point=True).encode(
         x=alt.X("date:T", title="Mois"),
-        y=alt.Y("total_usagers:Q", title="Véhicules comptés"),
-        color=alt.Color("mode_deplacement:N", title="Mode"),
+        y=alt.Y("total_usagers:Q", title="Véhicules comptés", scale=alt.Scale(zero=True)),
         tooltip=["date:T", "mode_deplacement:N", "total_usagers:Q", "nb_sites_actifs:Q"],
-    ).interactive(),
+    ).properties(height=120).facet(
+        row=alt.Row("mode_deplacement:N", title="Mode"),
+    ).resolve_scale(y="independent").interactive(),
     use_container_width=True,
 )
 

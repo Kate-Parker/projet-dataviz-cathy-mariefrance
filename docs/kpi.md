@@ -8,6 +8,7 @@ Les indicateurs sont calculés dans `gold_kpi` par `work/03_gold.ipynb`. Ils por
 - **Calcul :** somme de `nombre_vehicules` sur les observations Silver non signalées, tous modes, sites et périodes confondus.
 - **Unité :** véhicules comptés.
 - **Usage :** donner un ordre de grandeur global et vérifier la cohérence des agrégats.
+- **Visualisation :** une carte affiche le total et des barres horizontales présentent sa répartition par mode, sur toute la période et indépendamment des filtres.
 - **Limite :** ce cumul dépend de la durée de mesure et de la couverture des capteurs; ce n'est ni un nombre de personnes uniques ni un indicateur de saturation.
 
 ## 2. Nombre de sites actifs

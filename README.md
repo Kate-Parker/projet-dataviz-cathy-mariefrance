@@ -16,26 +16,26 @@ Comptages multimodal (CSV) ─► data lake S3 : bronze ─► silver ─► gol
 
 **Persona :** responsable de la mobilité urbaine à la Ville de Paris, qui doit repérer les sites et périodes nécessitant une analyse plus approfondie pour l'aménagement et la gestion des déplacements.
 
-**Rythme de décision retenu pour le projet :** revue opérationnelle hebdomadaire des comptages, puis arbitrages d'aménagement à cadence trimestrielle. Cette cadence est une hypothèse de conception du dashboard, pas une fréquence fournie par le jeu de données.
+**Rythme de décision retenu pour le projet :** revue opérationnelle hebdomadaire des comptages, puis arbitrages d'aménagement à cadence trimestrielle. Cette cadence est une hypothèse de conception, pas une fréquence fournie par le jeu de données.
 
 **Question principale :** quels sites et types de voie enregistrent les volumes de comptage les plus élevés, à quels jours et horaires, et comment ces volumes évoluent-ils selon le mode de déplacement ?
 
 Les comptages décrivent les passages mesurés par les capteurs. Ils ne donnent pas à eux seuls la capacité d'un axe ni son taux de saturation ; les résultats servent à identifier des tendances et des zones à examiner, en tenant compte de la couverture et des périodes de collecte.
 
-**Jeu de données :** le jeu ouvert [Comptages multimodaux de la Ville de Paris](https://opendata.paris.fr/explore/dataset/comptage-multimodal-comptages/information/) est téléchargé par le script ci-dessous. Il fournit une dimension temporelle (`t`, date et heure) et une dimension géographique (`coordonnees_geo`, coordonnées latitude/longitude). La métadonnée de l'API annonçait 14 199 484 enregistrements lors de la vérification ; le script contrôle chaque ligne et exige au moins 2 millions de lignes. Ce n'est pas le jeu NYC Taxi. Les nombres réellement ingérés et les résultats de qualité sont calculés dans les notebooks.
+**Source :** [Comptages multimodaux de la Ville de Paris](https://opendata.paris.fr/explore/dataset/comptage-multimodal-comptages/information/), jeu de données ouvertes distinct de NYC Taxi, avec date et heure (`t`) et coordonnées géographiques (`coordonnees_geo`). L'API annonçait 14 199 484 enregistrements lors d'une vérification ; les volumes réellement ingérés et les résultats de qualité dépendent du fichier source.
 
 ## Lancement local
 
 Depuis la racine du dépôt :
 
-**Prérequis :** Docker avec Compose v2, Bash, `curl` et Python 3 pour valider l'export. Sous Windows, lancer ces commandes depuis WSL ou Git Bash.
+**Prérequis :** Docker avec Compose v2, Bash, `curl` et Python 3. Sous Windows, utiliser WSL ou Git Bash.
 
 ```bash
 bash scripts/telecharger_donnees.sh
 docker compose up -d
 ```
 
-Le CSV est stocké dans `data/raw/` (ignoré par Git). Le téléchargement n'est installé qu'après vérification des en-têtes, des 10 champs sur chaque ligne et du nombre de lignes annoncé par l'API (au moins 2 millions). Pour le remplacer après une mise à jour, utiliser `bash scripts/telecharger_donnees.sh --force`. Les variables locales peuvent être configurées en copiant `.env.example` vers `.env`.
+Le CSV est stocké dans `data/raw/` (ignoré par Git). Avant installation, le script vérifie les en-têtes, chaque ligne et le nombre annoncé par l'API (au moins 2 millions de lignes). Pour remplacer un fichier existant, utiliser `bash scripts/telecharger_donnees.sh --force` ; en cas d'échec, il reste intact. Les variables locales peuvent être configurées en copiant `.env.example` vers `.env`.
 
 ### Exécuter le parcours Delta sans toucher aux données existantes
 
@@ -102,7 +102,7 @@ dans le même graphe sans les gérer, car leurs identifiants d'observation se
 recoupent. Pour l'environnement Delta isolé, ajouter le profil `semantique` à
 la commande Compose isolée et utiliser le port `13030`.
 
-Le dashboard Streamlit raconte le contexte, les constats et une piste d'analyse : évolution mensuelle, classement des sites, carte des sites aux volumes les plus élevés et carte de chaleur jour/heure. Les sites sans coordonnées valides restent dans le classement, mais sont écartés de la carte. Les KPI sont globaux. Les filtres année et mode s'appliquent aux graphiques mensuels et au classement/carte ; le profil jour/heure n'est filtrable que par mode car sa table Gold ne contient pas l'année. Les volumes ne sont pas interprétés comme une mesure de saturation.
+Le dashboard Streamlit présente le contexte, les constats et une piste d'analyse : total et répartition par mode, courbes mensuelles séparées par mode, classement et carte des sites, carte de chaleur jour/heure. Les échelles verticales des courbes mensuelles sont indépendantes. Les sites sans coordonnées valides restent dans le classement mais sont exclus de la carte. Les KPI et la répartition du total sont globaux. Les filtres année et mode s'appliquent aux graphiques mensuels, au classement et à la carte ; le profil jour/heure n'est filtrable que par mode car sa table Gold ne contient pas l'année. Un volume n'est pas une mesure de saturation.
 
 PostgreSQL initialise sa base et son utilisateur seulement lors de la création d'un volume neuf. Si un ancien volume ne contient pas `nyctaxi`, créer cette base sans supprimer les données existantes :
 
@@ -116,16 +116,17 @@ Adapter l'utilisateur si nécessaire. Modifier `PG_DB`, `PG_USER` ou `PG_PASSWOR
 
 - `work/02_silver.ipynb` : typage, règles de qualité, complétion prudente des attributs descriptifs, variables temporelles et géographiques, signalement non destructif des valeurs élevées, écriture de la table Silver et graphique avant/après.
 - `work/03_exploration_silver.ipynb` : exploration des volumes mensuels, profils horaires et sites/types de voie à investiguer.
-- `docs/silver.md` : justification des règles et bilan mesuré sur l'exécution Silver actuelle.
+- `docs/silver.md` : justification des règles et bilan d'une exécution Silver antérieure.
 - `work/03_gold.ipynb` : agrégats par site, mois, jour/heure et KPI pour alimenter le dashboard à partir de Silver.
 - `docs/gold.md` : dictionnaire des tables Gold, grain des agrégats et limites d'interprétation.
 - `docs/kpi.md` : définition, méthode de calcul, usage et limites des cinq KPI.
+- `docs/rapport-projet.md` : présentation du projet et état des validations.
 - `docs/audit.md` : état des exigences et différences constatées entre les branches.
 - `docs/pannes.md` : dépannage des erreurs courantes.
 - `work/04_exploration_gold.ipynb` : graphiques d'exploration construits à partir des tables Gold.
 - `work/05_export_postgres.ipynb` : export et relecture des tables Gold dans PostgreSQL.
 
-Lors de la dernière exécution, 66 des 107 sites actifs n'avaient pas de coordonnées valides : ils sont conservés dans les agrégats, mais doivent être exclus de la carte. Les nombres et KPI de `docs/gold.md` correspondent aux données actuellement présentes dans Bronze et sont à recalculer après toute nouvelle ingestion.
+Lors d'une exécution antérieure, 66 des 107 sites actifs n'avaient pas de coordonnées valides : ils sont conservés dans les agrégats, mais exclus de la carte. Les nombres et KPI de `docs/gold.md` sont historiques et doivent être recalculés après ingestion d'un export complet.
 
 
 

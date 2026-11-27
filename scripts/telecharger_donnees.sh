@@ -44,6 +44,15 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
+if python3 -c 'import sys; sys.exit(sys.version_info.major != 3)' >/dev/null 2>&1; then
+    PYTHON=python3
+elif python -c 'import sys; sys.exit(sys.version_info.major != 3)' >/dev/null 2>&1; then
+    PYTHON=python
+else
+    echo "Erreur : Python 3 est nécessaire pour valider le téléchargement." >&2
+    exit 1
+fi
+
 case "$OUTPUT" in
     /*) ;;
     *) OUTPUT="$PWD/$OUTPUT" ;;
@@ -66,7 +75,6 @@ trap cleanup 0 HUP INT TERM
 
 if ! curl --fail --location --silent --show-error \
     --connect-timeout 20 --retry 2 --retry-delay 2 \
-    --user-agent 'projet-dataviz-comptages-paris/1.0' \
     --output "$METADATA_FILE" "$METADATA_URL"; then
     echo "Erreur : impossible de lire les métadonnées du jeu de données." >&2
     exit 1
@@ -85,7 +93,7 @@ if [ ! -s "$TEMP_FILE" ]; then
     exit 1
 fi
 
-if ! python3 - "$TEMP_FILE" "$METADATA_FILE" <<'PY'
+if ! "$PYTHON" - "$TEMP_FILE" "$METADATA_FILE" <<'PY'
 import csv
 import json
 import sys
@@ -107,11 +115,11 @@ try:
     with open(sys.argv[2], encoding="utf-8") as fichier:
         metadonnees = json.load(fichier)
     nombre_attendu = metadonnees.get("metas", {}).get("default", {}).get("records_count")
-    if not isinstance(nombre_attendu, int):
+    if not isinstance(nombre_attendu, int) or isinstance(nombre_attendu, bool):
         raise ValueError("Nombre de lignes absent des métadonnées de l'API.")
 
     with open(sys.argv[1], encoding="utf-8-sig", newline="") as fichier:
-        lecteur = csv.reader(fichier, delimiter=";")
+        lecteur = csv.reader(fichier, delimiter=";", strict=True)
         entetes = next(lecteur, None)
         if entetes != colonnes_attendues:
             print(
@@ -123,20 +131,15 @@ try:
         nombre_lignes = 0
         for numero, ligne in enumerate(lecteur, start=2):
             if len(ligne) != len(colonnes_attendues):
-                print(
-                    f"Erreur : ligne CSV {numero} : {len(ligne)} champs reçus, "
-                    f"{len(colonnes_attendues)} attendus.",
-                    file=sys.stderr,
+                raise ValueError(
+                    f"Ligne CSV {numero} : {len(ligne)} champs reçus, "
+                    f"{len(colonnes_attendues)} attendus."
                 )
-                sys.exit(1)
             nombre_lignes += 1
         if nombre_lignes != nombre_attendu:
-            print(
-                f"Erreur : {nombre_lignes:,} lignes reçues, "
-                f"{nombre_attendu:,} annoncées par l'API.",
-                file=sys.stderr,
+            raise ValueError(
+                f"{nombre_lignes:,} lignes reçues, {nombre_attendu:,} annoncées par l'API."
             )
-            sys.exit(1)
         if nombre_lignes < 2_000_000:
             print("Erreur : moins de 2 000 000 lignes de données.", file=sys.stderr)
             sys.exit(1)
