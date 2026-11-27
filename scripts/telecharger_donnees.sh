@@ -44,6 +44,15 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
+if python3 -c 'import sys; sys.exit(sys.version_info.major != 3)' >/dev/null 2>&1; then
+    PYTHON=python3
+elif python -c 'import sys; sys.exit(sys.version_info.major != 3)' >/dev/null 2>&1; then
+    PYTHON=python
+else
+    echo "Erreur : Python 3 est nécessaire pour valider le téléchargement." >&2
+    exit 1
+fi
+
 case "$OUTPUT" in
     /*) ;;
     *) OUTPUT="$PWD/$OUTPUT" ;;
@@ -85,7 +94,7 @@ if [ ! -s "$TEMP_FILE" ]; then
     exit 1
 fi
 
-if ! python3 - "$TEMP_FILE" "$METADATA_FILE" <<'PY'
+if ! "$PYTHON" - "$TEMP_FILE" "$METADATA_FILE" <<'PY'
 import csv
 import json
 import sys
