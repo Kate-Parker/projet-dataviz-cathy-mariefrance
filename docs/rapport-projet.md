@@ -99,7 +99,7 @@ Les courbes séparent les modes pour rendre leurs variations lisibles. Tous mode
 
 ### Classement et carte des sites
 
-Sur l'ensemble des années et modes retenus, le site **CF0001_9 boulevard de Sébastopol** totalise **59 101 880** comptages et arrive en tête du classement. Il s'agit d'une piste à examiner, pas d'une preuve de saturation : la durée et les conditions de collecte peuvent différer selon les sites. Parmi les **108 sites actifs**, **41** disposent de coordonnées valides dans le classement ; les autres restent dans les tableaux mais ne figurent pas sur la carte.
+Sur l'ensemble des années et modes retenus, le site **CF0001_9 boulevard de Sébastopol** totalise **59 101 880** comptages et arrive en tête du classement. Il s'agit d'une piste à examiner, pas d'une preuve de saturation : la durée et les conditions de collecte peuvent différer selon les sites. Parmi les **108 sites actifs**, **41** disposent de coordonnées valides dans le classement ; les autres restent dans les tableaux mais ne figurent pas sur la carte. Les marqueurs ont une taille fixe : les volumes se lisent dans le classement.
 
 ### Carte de chaleur jour/heure
 

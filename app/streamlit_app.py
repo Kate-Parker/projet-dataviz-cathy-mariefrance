@@ -152,13 +152,14 @@ else:
     st.caption(
         f"Les 10 sites cartographiables les plus élevés parmi "
         f"{sites_cartographiables['identifiant_site'].nunique()} sites géolocalisés. "
+        "Les marqueurs ont une taille fixe ; les volumes figurent dans le classement. "
         "Les sites sans coordonnées restent présents dans le classement, mais pas sur la carte."
     )
     st.map(
         carte,
         latitude="latitude",
         longitude="longitude",
-        size="total_usagers",
+        size=100,
         color="#3B82F6",
         zoom=11,
     )
